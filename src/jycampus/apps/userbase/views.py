@@ -150,6 +150,7 @@ class ParticipantsView(TemplateView):
         if participants_form.is_valid():
             try:
                 participants_form.save()
+                return redirect('/')
             except ValidationError as e:
                 print(e)
                 pass
