@@ -21,12 +21,30 @@ from django.contrib import messages
 from django.utils.http import urlsafe_base64_decode
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response
+from django.contrib import messages
 
 User = get_user_model()
 
 LOG = logging.getLogger('myStock.%s' % __name__)
 
 # Create your views here.
+
+
+class IndexView(TemplateView):
+    """
+
+    """
+    template_name = 'registration/index.html'
+
+    def get(self, request, *args, **kwargs):
+        """
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return render(request, self.template_name)
 
 
 class LoginView(AnonymousRequiredMixin, TemplateView):
@@ -74,55 +92,21 @@ class LoginView(AnonymousRequiredMixin, TemplateView):
             email = login_form.cleaned_data.get('email')
             raw_password = login_form.cleaned_data.get('password')
             try:
-                print("user")
                 user = authenticate(email=email, password=raw_password)
+                print(user)
                 login(request, user)
-                return redirect('/participants')
+                return redirect('/home')
             except:
                 messages.warning(request, 'Email And Password Does Not Match.')
                 return redirect('/login')
         return render(request, self.template_name, context)
-
-        # elif request.POST.get('submit') == 'sign_up':
-        #     sign_up_form = self.sign_up_form(request.POST)
-        #     login_form = self.login_form()
-        #     i_agree_form = self.i_agree_form(request.POST)
-        #     forgot_password_form = self.forgot_password_form()
-        #     context = {
-        #         'login_form': login_form,
-        #         'signup_form': sign_up_form,
-        #         'i_agree_form': i_agree_form,
-        #         'forgot_password_form': forgot_password_form,
-        #     }
-        #     if sign_up_form.is_valid() and i_agree_form.is_valid():
-        #         subscription_flag = sign_up_form.cleaned_data.get('is_subscribed')
-        #         subscription_email = sign_up_form.cleaned_data.get('email')
-        #         user = sign_up_form.save(commit=False)
-        #         user.is_active = False
-        #         user.is_subscribed = subscription_flag
-        #         user.save()
-        #         if subscription_flag == True:
-        #             # call the services to add to subscription list.
-        #             services.add_to_subscription_list(subscription_email)
-        #
-        #         # context['line1'] = "Welcome to Spattern.net."
-        #         # context['line2'] = "We have sent the registration confirmation link to your email address."
-        #         # context['line3'] = "If you have not received the password link, please check your junk email folder."
-        #         # context['line4'] = "Team SPatterns.net"
-        #
-        #         context['message'] = "Welcome to Spattern.net. We have sent the registration " \
-        #                              "confirmation link to your email address. " \
-        #                              "If you have not received the password link, " \
-        #                              "please check your junk email folder. Team SPatterns.net"
-        #         return render(request, self.template_name, context)
-        #     return render(request, self.template_name, context)
 
 
 class ParticipantsView(TemplateView):
     participants_form = AddParticipantsForm
     # sign_up_form = SignUpForm
     initial = {'key': 'value'}
-    template_name = 'registration/participants.html'
+    template_name = 'registration/adduser.html'
 
     def get(self, request, *args, **kwargs):
         """
@@ -147,10 +131,12 @@ class ParticipantsView(TemplateView):
         :return:
         """
         participants_form = self.participants_form(request.POST)
+
         if participants_form.is_valid():
+            sub_region = participants_form.cleaned_data.get('subregion')
             try:
                 participants_form.save()
-                return redirect('/')
+                return redirect('/home')
             except ValidationError as e:
                 print(e)
                 pass
@@ -165,7 +151,7 @@ class ParticipantList(TemplateView):
     """
 
     """
-    template_name = 'registration/participants_list.html'
+    template_name = 'registration/dashboard.html'
 
     def get(self, request, *args, **kwargs):
         """
@@ -180,6 +166,29 @@ class ParticipantList(TemplateView):
             'participants': participants
         }
         return render(request, self.template_name, context)
+
+
+def DeleteParticipant(request, pk):
+    """
+
+    """
+    print(pk)
+    participant_object = Participants.objects.get(id=pk)
+
+    if participant_object:
+
+        participant_object.delete()
+    return redirect("/home")
+
+
+def editParticipant(request, pk):
+    instance = get_object_or_404(Participants, id=pk)
+    participant_form = AddParticipantsForm(request.POST or None, instance=instance)
+    if participant_form.is_valid():
+        participant_form.save()
+        return redirect("/home")
+    return render(request, 'registration/adduser.html', {'participants_form': participant_form})
+
 
 class AboutUs(TemplateView):
     """
@@ -219,7 +228,7 @@ class HomeView(TemplateView):
     """
 
     """
-    template_name = 'registration/participants_list.html'
+    template_name = 'registration/participants.html'
 
     def get(self, request, *args, **kwargs):
         """

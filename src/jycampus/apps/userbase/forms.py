@@ -33,14 +33,13 @@ class AddParticipantsForm(forms.ModelForm):
     all fields are must fields
     """
     YEARS = [x for x in range(1940, 2021)]
-    CHOICES = (('TASC', 'Arts and Science'),('Option 2', 'Option 2'),)
-    STREAM_CHOICES = (('TASC', 'Arts and Science'), ('Engineering', 'Engineering'),('Medical', 'Medical'),
+    STREAM_CHOICES = (('None', 'Select Stream'), ('TASC', 'Arts and Science'), ('Engineering', 'Engineering'),('Medical', 'Medical'),
                ('Nursing', 'Nursing'), ('Polytechnic', 'Polytechnic'),
                ('ITI', 'ITI'), ('Law', 'Law'), ('Hotel Management', 'Hotel Management'), ('Others', 'Others'))
-    SUBREGION_CHOICES = (('North', 'North'), ('Malabar', 'Malabar'), ('North central', 'North central'),
+    SUBREGION_CHOICES = (('None', 'Select Subregion'), ('North', 'North'), ('Malabar', 'Malabar'), ('North central', 'North central'),
                       ('Central', 'Central'), ('Eastern', 'Eastern'),
                       ('South central', 'South central'), ('South', 'South'),)
-    ZONE_CHOICES = (('Kasargod', 'Kasargod'), ('Thalassery', 'Thalassery'), ('Manathaady', 'Manathaady'),
+    ZONE_CHOICES = (('None', 'Select Zone'), ('Kasargod', 'Kasargod'), ('Thalassery', 'Thalassery'), ('Manathaady', 'Manathaady'),
                          ('Calicut', 'Calicut'), ('Palakkad', 'Palakkad'),
                          ('Thrissur', 'Thrissur'), ('Irinjalakkuda', 'Irinjalakkuda'),
                     ('Angamaly', 'Angamaly'), ('Ernakulam', 'Ernakulam'),
@@ -55,9 +54,7 @@ class AddParticipantsForm(forms.ModelForm):
     name = forms.CharField(max_length=30,
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
 
-    dob = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': "form-control"}))
-
-
+    dob = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': "YYYY-MM-DD"}))
     email = forms.EmailField(max_length=100, help_text='Required. Inform a valid email address.',
                              widget=forms.EmailInput(attrs={'class': "form-control"}))
     phoneNumber = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -65,9 +62,10 @@ class AddParticipantsForm(forms.ModelForm):
     stream = forms.CharField(widget=forms.Select(choices=STREAM_CHOICES, attrs={'class': "form-control"}))
     subregion = forms.CharField(widget=forms.Select(choices=SUBREGION_CHOICES, attrs={'class': "form-control"}))
     zone = forms.CharField(widget=forms.Select(choices=ZONE_CHOICES, attrs={'class': "form-control"}))
+
     class Meta:
         model = Participants
-        fields = ('name', 'dob', 'email', 'phoneNumber', 'college')
+        fields = ('name', 'dob', 'email', 'phoneNumber', 'college', 'stream', 'subregion', 'zone')
 
 
 

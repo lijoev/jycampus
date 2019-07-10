@@ -1,113 +1,97 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block page %}
-<div class="inner-nav">
-          <div style="display:flex;flex-direction:column;justify-content: center;">
-          <button class="tablink" onclick="openPage('Home', this, 'none')"id="defaultOpen">Login</button>
-          <button class="tablink" onclick="openPage('News', this, 'rgb(153, 6, 6)')" >Location</button>
-          <button class="tablink" onclick="openPage('Contact', this, 'rgb(153, 6, 6)')">Prayer</button>
-          <button class="tablink" onclick="openPage('About', this, 'rgb(153, 6, 6)')">News</button>
-          </div>
-          <div style="flex:1;">
-          <div id="Home" class="tabcontent" >
-             <form class="login" method="post">
-                      {% csrf_token %}
-                      <div class="container">
-                          <label for="uname"><b>Email</b></label>
-                          {{ login_form.email }}
-                          <label for="psw"><b>Password</b></label>
-                          <!--                <input type="password" id="pwd" placeholder="Enter Password" name="psw" required>-->
-                          {{ login_form.password }}
-                          <button type="submit" value='sign_in'>Login</button>
-                          <!--                <button type="submit" name='submit' class="btn btn-danger custbtn" value='sign_in'>-->
 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>RoyalUI Admin</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{% static 'vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'vendors/base/vendor.bundle.base.css' %}">
+  <!-- endinject -->
+  <!-- plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" />
+</head>
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo">
+                <img src="{% static 'images/logo.svg' %}" alt="logo">
+              </div>
+              {% if messages %}
+                  <div class="span6" id="mydiv">
+                      {% for message in messages %}
+                      <div class="alert alert-warning">
+                        {{ message|safe }}
                       </div>
+                      {% endfor %}
+                  </div>
+              {% endif %}
 
-                  </form>
-          </div>
+              <form method="post" class="pt-3">
+                                      {% csrf_token %}
 
-          <div id="News" class="tabcontent">
-          <div>
-            <iframe width="500" height="400" id="gmap_canvas" src="https://maps.google.com/maps?q=bharat%20math%20college&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                {% if login_form.email.errors %}
+                <div class="alert alert-info">
+                    {{login_form.email.errors}}
+                </div>
+                {% endif %}
+                <label class="control-label"> Email Address</label>
+                <div class="form-group">
+                  {{ login_form.email }}
+                </div>
+                {% if login_form.password.errors %}
+                <div class="alert alert-info">
+                    {{login_form.password.errors}}
+                </div>
+                {% endif %}
+                <label class="control-label">Password</label>
+                <div class="form-group">
+                  {{ login_form.password }}
+                </div>
+                <div class="mt-3">
+                  <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit" value='sign_in'>Login</button>
+                </div>
+<!--                <div class="my-2 d-flex justify-content-between align-items-center">-->
+<!--                  <div class="form-check">-->
+<!--                    <label class="form-check-label text-muted">-->
+<!--                      <input type="checkbox" class="form-check-input">-->
+<!--                      Keep me signed in-->
+<!--                    </label>-->
+<!--                  </div>-->
+<!--                  <a href="#" class="auth-link text-black">Forgot password?</a>-->
+<!--                </div>-->
 
-          </div>
-          </div>
-
-          <div id="Contact" class="tabcontent">
-            <div class="prayer"><label for="">O Lord God, let the campuses be filled with young missionries<br/>
-              blessed with the sprit of the father, the love of the Christ<br/>
-             and anointing of the Holt Sprit .<br/>
-           Hail Mary,intercede for us</label></div>
-          </div>
-
-          <div id="About" class="tabcontent">
-          <div class="about">
-            <h3>News</h3>
-            <p>Who we are and what we do.</p>
+              </form>
             </div>
           </div>
-          </div>
-          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="{% static 'vendors/base/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- inject:js -->
+  <script src="{% static 'js/off-canvas.js' %}"></script>
+  <script src="{% static 'js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'js/template.js' %}"></script>
+  <script src="{% static 'js/todolist.js' %}"></script>
+  <!-- endinject -->
+</body>
 
-
-<script>
-  //slide carousel
-  function myFunction() {
-  var x = document.getElementById("myTopnav");
-  if (x.className === "topnav") {
-    x.className += " responsive";
-  } else {
-    x.className = "topnav";
-  }
-}
-  var myIndex = 0;
-carousel();
-
-function carousel() {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  myIndex++;
-  if (myIndex > x.length) {myIndex = 1}
-  x[myIndex-1].style.display = "block";
-  setTimeout(carousel, 2000); // Change image every 2 seconds
-}
-
-function openPage(pageName,elmnt,color) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].style.backgroundColor = "";
-  }
-  document.getElementById(pageName).style.display = "block";
-  elmnt.style.backgroundColor = color;
-}
-
-// Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultOpen").click();
-function openForm() {
-
-  if( document.getElementById("uname").value !="" && document.getElementById("pwd").value!="")
-  {
-    document.getElementById("myTopnav").style.display="none;"
-     document.getElementById("myForm").style.display = "block";
-     document.getElementById("uname").value="";
-     document.getElementById("pwd").value="";
-
-     myTopnav
-  }
-}
-
-function closeForm() {
-  document.getElementById("myForm").style.display = "none";
-  document.getElementById("myTopnav").style.display="block;"
-}
-
-</script>
-{% endblock %}
+</html>
